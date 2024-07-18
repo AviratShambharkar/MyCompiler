@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 
@@ -15,11 +15,38 @@ function App() {
       // Return 0 to indicate successful execution
       return 0; 
   }`);
+  const [language, setLanguage] = useState("cpp");
   const [output, setOutput] = useState("");
+
+  useEffect(() => {
+    const boilerplateCode = {
+      cpp: `#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!";
+    return 0;
+}`,
+      py: `print("Hello, World!")`,
+      java: `public class Main {
+        public static void main(String[] args) {
+            System.out.println("Hello, World!");
+        }
+    }`,
+      c: `#include <stdio.h>
+
+int main() {
+    printf("Hello, World!");
+    return 0;
+}`,
+      js: `console.log("Hello, World!");`,
+    };
+
+    setCode(boilerplateCode[language]);
+  }, [language]);
 
   const handleSubmit = async () => {
     const payload = {
-      language: "cpp",
+      language,
       code,
     };
 
@@ -35,11 +62,16 @@ function App() {
   return (
     <div className="container mx-auto py-8 flex flex-col items-center">
       <h1 className="text-3xl font-bold mb-4">AlgoU Online Code Compiler</h1>
-      <select className="select-box border border-gray-300 rounded-lg py-1.5 px-4 mb-1 focus:outline-none focus:border-indigo-500">
+      <select
+        className="select-box border border-gray-300 rounded-lg py-1.5 px-4 mb-1 focus:outline-none focus:border-indigo-500"
+        value={language}
+        onChange={(e) => setLanguage(e.target.value)}
+      >
         <option value="cpp">C++</option>
         <option value="c">C</option>
         <option value="py">Python</option>
         <option value="java">Java</option>
+        <option value="js">JavaScript</option>
       </select>
       <br />
       <div
