@@ -3,6 +3,9 @@ import cors from "cors";
 import generateFile from "./generateFile.js";
 import executeCpp from "./executeCpp.js";
 import executePy from "./executePy.js";
+import executeC from "./executeC.js";
+import executeJava from "./executeJava.js";
+import executeJs from "./executeJs.js";
 
 const app = express();
 const port = 5000;
@@ -29,20 +32,32 @@ app.post("/run", async (req, res) => {
 
   try {
     const filePath = await generateFile(language, code);
-    let output;
 
-    if (language === "cpp") {
-      output = await executeCpp(filePath);
-    } else if (language === "py") {
-      output = await executePy(filePath);
-    } else {
-      return res
-        .status(400)
-        .json({ success: false, error: "Unsupported language!" });
+    let output;
+    switch (language) {
+      case "cpp":
+        output = await executeCpp(filePath);
+        break;
+      case "py":
+        output = await executePy(filePath);
+        break;
+      case "c":
+        output = await executeC(filePath);
+        break;
+      case "java":
+        output = await executeJava(filePath);
+        break;
+      case "js":
+        output = await executeJs(filePath);
+        break;
+      default:
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid language!" });
     }
 
     res.json({ filePath, output });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error });
   }
 });
