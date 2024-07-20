@@ -35,14 +35,14 @@ app.post("/run", async (req, res) => {
 
     let output;
     switch (language) {
-      case "cpp":
-        output = await executeCpp(filePath);
+      case "c":
+        output = await executeC(filePath);
         break;
       case "py":
         output = await executePy(filePath);
         break;
-      case "c":
-        output = await executeC(filePath);
+      case "cpp":
+        output = await executeCpp(filePath);
         break;
       case "java":
         output = await executeJava(filePath);
