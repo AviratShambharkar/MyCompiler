@@ -32,6 +32,7 @@ app.post("/run", async (req, res) => {
 
   try {
     const filePath = await generateFile(language, code);
+
     let output;
     switch (language) {
       case "c":
@@ -57,6 +58,6 @@ app.post("/run", async (req, res) => {
 
     res.json({ filePath, output });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error });
   }
 });
