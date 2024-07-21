@@ -13,9 +13,9 @@ if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executeJava = (filepath) => {
+const executeJava = (filepath, inputPath) => {
   return new Promise((resolve, reject) => {
-    exec(`java ${filepath}`, (error, stdout, stderr) => {
+    exec(`java ${filepath} < ${inputPath}`, (error, stdout, stderr) => {
       if (error) {
         reject({ error, stderr });
       }

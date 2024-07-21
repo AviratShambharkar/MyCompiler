@@ -6,6 +6,7 @@ import executePy from "./executePy.js";
 import executeC from "./executeC.js";
 import executeJava from "./executeJava.js";
 import executeJs from "./executeJs.js";
+import generateInputFile from "./generateInputFile.js";
 
 const app = express();
 const port = 5000;
@@ -24,7 +25,7 @@ app.listen(port, () => {
 });
 
 app.post("/run", async (req, res) => {
-  const { language = "cpp", code } = req.body;
+  const { language = "cpp", code, input } = req.body;
 
   if (code === undefined) {
     return res.status(404).json({ success: false, error: "Empty code!" });
@@ -32,23 +33,24 @@ app.post("/run", async (req, res) => {
 
   try {
     const filePath = await generateFile(language, code);
+    const inputPath = input ? await generateInputFile(input) : null;
 
     let output;
     switch (language) {
       case "c":
-        output = await executeC(filePath);
+        output = await executeC(filePath, inputPath);
         break;
       case "py":
-        output = await executePy(filePath);
+        output = await executePy(filePath, inputPath);
         break;
       case "cpp":
-        output = await executeCpp(filePath);
+        output = await executeCpp(filePath, inputPath);
         break;
       case "java":
-        output = await executeJava(filePath);
+        output = await executeJava(filePath, inputPath);
         break;
       case "js":
-        output = await executeJs(filePath);
+        output = await executeJs(filePath, inputPath);
         break;
       default:
         return res
@@ -56,7 +58,7 @@ app.post("/run", async (req, res) => {
           .json({ success: false, error: "Invalid language!" });
     }
 
-    res.json({ filePath, output });
+    res.json({ filePath, inputPath, output });
   } catch (error) {
     res.status(500).json({ error: error });
   }

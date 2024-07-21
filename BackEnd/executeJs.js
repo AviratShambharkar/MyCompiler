@@ -13,9 +13,9 @@ if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executeJs = (filepath) => {
+const executeJs = (filepath, inputPath) => {
   return new Promise((resolve, reject) => {
-    exec(`node ${filepath}`, (error, stdout, stderr) => {
+    exec(`node ${filepath} < ${inputPath}`, (error, stdout, stderr) => {
       if (error) {
         reject({ error, stderr });
       }
